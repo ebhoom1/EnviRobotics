@@ -36,7 +36,7 @@ DB();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://43.205.211.237:5555'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://ocems.ebhoom.com','http://43.205.211.237:5555',],
     credentials: true
 }));
 app.use(cookieParser());
