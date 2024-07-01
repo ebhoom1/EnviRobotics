@@ -117,11 +117,11 @@ const setupMqttClient = (io) => {
                     console.log('Data to be posted:', data);
 
                     // Send POST request
-                    await axios.post('http://15.206.185.247/api/handleSaveMessage', data);
+                    await axios.post('http://ocems.ebhoom.com/api/handleSaveMessage', data);
                     console.log('Data successfully posted to handleSaveMessage');
 
                     // Send POST request for handling exceed values
-                    await axios.post('http://15.206.185.247/api/handleExceedValues', data);
+                    await axios.post('http://ocems.ebhoom.com/api/handleExceedValues', data);
                     console.log('Data successfully posted to handleExceedValues');
 
                     io.to(product_id.toString()).emit('data', data);
