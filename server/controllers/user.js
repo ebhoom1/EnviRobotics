@@ -156,7 +156,7 @@ const sendPasswordLink= async (req,res)=>{
                 from:process.env.EMAIl,
                 to:email,
                 subject:"Sending Email for Password Reset",
-                text:`This Link Valid for 2 Minutes http://15.206.185.247:5555/reset-password/${userfind._id}/${setusertoken.verifytoken}`
+                text:`This Link Valid for 2 Minutes http://ocems.ebhoom.com/reset-password/${userfind._id}/${setusertoken.verifytoken}`
 
             }
             transporter.sendMail(mailOptions,(error,info)=>{
