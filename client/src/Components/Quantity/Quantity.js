@@ -91,82 +91,78 @@ const Quantity = () => {
           </div>
         </div>
 
-        {searchResult && !searchError && (
-          <>
-            <div className="card">
-              <div className="card-body">
-                <div className="row mt-5">
-                  <div className="col-md-12">
-                    <h2>Water Flow</h2>
-                    <div className="table-responsive mt-3">
-                      <table className="table table-bordered">
-                        <thead>
+        <div className="card">
+          <div className="card-body">
+            <div className="row mt-5">
+              <div className="col-md-12">
+                <h2>Water Flow</h2>
+                <div className="table-responsive mt-3">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Sl.No</th>
+                        <th>Parameter</th>
+                        {getDatesHeaders().map((date, index) => (
+                          <th key={index}>{date}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.isArray(differenceData) && differenceData.map((data, index) => (
+                        <React.Fragment key={index}>
                           <tr>
-                            <th>Sl.No</th>
-                            <th>Parameter</th>
+                            <td>{index + 1}</td>
+                            <td>FL-Inlet raw sewage,KLD</td>
                             {getDatesHeaders().map((date, index) => (
-                              <th key={index}>{date}</th>
+                              <td key={index}>{data[date] ? data[date].inflowDifference : '-'}</td>
                             ))}
                           </tr>
-                        </thead>
-                        <tbody>
-                          {Array.isArray(differenceData) && differenceData.map((data, index) => (
-                            <React.Fragment key={index}>
-                              <tr>
-                                <td>{index + 1}</td>
-                                <td>FL-Inlet raw sewage,KLD</td>
-                                {getDatesHeaders().map((date, index) => (
-                                  <td key={index}>{data[date] ? data[date].inflowDifference : '-'}</td>
-                                ))}
-                              </tr>
-                              <tr>
-                                <td>{index + 1}</td>
-                                <td>FL-Treated Water,KLD</td>
-                                {getDatesHeaders().map((date, index) => (
-                                  <td key={index}>{data[date] ? data[date].finalflowDifference : '-'}</td>
-                                ))}
-                              </tr>
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <ToastContainer />
-                  </div>
+                          <tr>
+                            <td>{index + 1}</td>
+                            <td>FL-Treated Water,KLD</td>
+                            {getDatesHeaders().map((date, index) => (
+                              <td key={index}>{data[date] ? data[date].finalflowDifference : '-'}</td>
+                            ))}
+                          </tr>
+                        </React.Fragment>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+                <ToastContainer />
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="card mb-4 mt-4">
-              <div className="card-body">
-                <div className="row mt-5">
-                  <div className="col-md-12">
-                    <h2 className="m-3">Total FL Sewage Graph</h2>
-                    <div className="btn-group" role="group">
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('hour')}>Hour</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('day')}>Day</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('week')}>Week</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('month')}>Month</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('sixmonth')}>Six Months</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('year')}>Year</button>
-                    </div>
-                    <ResponsiveContainer width="100%" height={400}>
-                      <BarChart data={averageData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="timestamp" tickFormatter={formatXAxis} />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="inflow" fill="#8884d8" />
-                        <Bar dataKey="finalflow" fill="#82ca9d" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+        <div className="card mb-4 mt-4">
+          <div className="card-body">
+            <div className="row mt-5">
+              <div className="col-md-12">
+                <h2 className="m-3">Total FL Sewage Graph</h2>
+                <div className="btn-group" role="group">
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('hour')}>Hour</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('day')}>Day</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('week')}>Week</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('month')}>Month</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('sixmonth')}>Six Months</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('year')}>Year</button>
                 </div>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={searchResult ? averageData : []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="timestamp" tickFormatter={formatXAxis} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="inflow" fill="#8884d8" />
+                    <Bar dataKey="finalflow" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          </>
-        )}
+          </div>
+        </div>
 
         <footer className="footer">
           <div className="container-fluid clearfix">

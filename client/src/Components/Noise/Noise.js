@@ -11,27 +11,32 @@ import { useOutletContext } from 'react-router-dom';
 const Noise = () => {
   const dispatch = useDispatch();
   const { userData, userType } = useSelector((state) => state.user);
-  const { latestData, userIotData } = useSelector((state) => state.iotData);
+  const { latestData, error } = useSelector((state) => state.iotData);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [showCalibrationPopup, setShowCalibrationPopup] = useState(false);
-  const { searchResults, submittedSearchTerm } = useOutletContext();
-
-  const validateUser = async () => {
-    const response = await dispatch(fetchUser()).unwrap();
-  };
-
-  if (!userData) {
-    validateUser();
-  }
+  const { searchTerm, searchStatus, handleSearch } = useOutletContext();
+  const [searchResult, setSearchResult] = useState(null);
+  const [searchError, setSearchError] = useState("");
 
   useEffect(() => {
-    if (userData) {
-      if (userType === 'user') {
-        dispatch(fetchIotDataByUserName(userData.validUserOne.userName));
+    const fetchData = async (userName) => {
+      try {
+        const result = await dispatch(fetchIotDataByUserName(userName)).unwrap();
+        setSearchResult(result);
+        setSearchError("");
+      } catch (err) {
+        setSearchResult(null);
+        setSearchError(err.message || 'No Result found for this userID');
       }
+    };
+
+    if (searchTerm) {
+      fetchData(searchTerm);
+    } else if (userData && userType === 'user') {
+      fetchData(userData.validUserOne.userName);
     }
-  }, [userData, userType, dispatch]);
+  }, [searchTerm, userData, userType, dispatch]);
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -68,7 +73,7 @@ const Noise = () => {
                   {latestData && (
                     <>
                       <h5>Analyser Health : </h5>
-                      {userIotData.validationStatus ? (
+                      {searchResult?.validationStatus ? (
                         <h5 style={{ color: "green" }}>Good</h5>
                       ) : (
                         <h5 style={{ color: "red" }}>Problem</h5>
@@ -85,6 +90,13 @@ const Noise = () => {
             </div>
           </div>
         </div>
+        {searchError && (
+          <div className="card mb-4">
+            <div className="card-body">
+              <h1>{searchError}</h1>
+            </div>
+          </div>
+        )}
         <div className="p-2"></div>
         <div className="p-2"></div>
         <div className="row">
@@ -96,7 +108,12 @@ const Noise = () => {
                     <h3 className="mb-3">Limits in DB</h3>
                   </div>
                   <div className="col-12 mb-3">
-                    <h6><strong className="strong-value">{searchResults.db || 'N/A'}</strong> dB</h6>
+                    <h6>
+                      <strong className="strong-value">
+                        {searchStatus === 'success' && searchResult ? searchResult.db || 'N/A' : 'No Result found for this userID'}
+                      </strong> 
+                      dB
+                    </h6>
                   </div>
                   <div className="col-12"></div>
                 </div>
@@ -110,7 +127,7 @@ const Noise = () => {
             isOpen={showPopup}
             onRequestClose={handleClosePopup}
             parameter={selectedCard.title}
-            userName={submittedSearchTerm || userData?.validUserOne?.userName}
+            userName={searchTerm || userData?.validUserOne?.userName}
           />
         )}
 
@@ -131,7 +148,7 @@ const Noise = () => {
           <span className="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
             ©
             <a href="" target="_blank">
-            EnviRobotics
+              Ebhoom Solutions LLP
             </a>
             2023
           </span>

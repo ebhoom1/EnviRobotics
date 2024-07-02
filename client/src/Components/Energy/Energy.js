@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from "../../redux/features/user/userSlice";
 import { fetchAverageDataByUserName, fetchDifferenceDataByUserName } from "../../redux/features/iotData/iotDataSlice";
 import {
   CartesianGrid,
@@ -91,75 +90,77 @@ const Energy = () => {
           </div>
         </div>
 
-        {searchResult && !searchError && (
-          <>
-            <div className="card">
-              <div className="card-body">
-                <div className="row mt-5">
-                  <div className="col-md-12">
-                    <h2>Energy Flow</h2>
-                    <div className="table-responsive mt-3">
-                      <table className="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>SI.No</th>
-                            <th>Parameter</th>
-                            <th>Acceptable <br /> Limits</th>
-                            {getDatesHeaders().map((date, index) => (
-                              <th key={index}>{date}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {Array.isArray(differenceData) && differenceData.map((data, index) => (
-                            <React.Fragment key={index}>
-                              <tr>
-                                <td>{index + 1}</td>
-                                <td>FL-Inlet raw sewage,KLD</td>
-                                {getDatesHeaders().map((date, index) => (
-                                  <td key={index}>{data[date] ? data[date].inflowDifference : '-'}</td>
-                                ))}
-                              </tr>
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <ToastContainer />
-                  </div>
+        <div className="card">
+          <div className="card-body">
+            <div className="row mt-5">
+              <div className="col-md-12">
+                <h2>Energy Flow</h2>
+                <div className="table-responsive mt-3">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>SI.No</th>
+                        <th>Parameter</th>
+                        <th>Acceptable <br /> Limits</th>
+                        {getDatesHeaders().map((date, index) => (
+                          <th key={index}>{date}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.isArray(differenceData) && differenceData.length > 0 ? (
+                        differenceData.map((data, index) => (
+                          <React.Fragment key={index}>
+                            <tr>
+                              <td>{index + 1}</td>
+                              <td>FL-Inlet raw sewage,KLD</td>
+                              {getDatesHeaders().map((date, index) => (
+                                <td key={index}>{data[date] ? data[date].inflowDifference : '-'}</td>
+                              ))}
+                            </tr>
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={getDatesHeaders().length + 3} className="text-center">No data available</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
+                <ToastContainer />
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="card mt-4 mb-5">
-              <div className="card-body">
-                <div className="row mt-5">
-                  <div className="col-md-12">
-                    <h2 className="m-3">Trending Analysis - FL - STP Incomer Energy Consumption, kWh</h2>
-                    <div className="btn-group" role="group">
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('hour')}>Hour</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('day')}>Day</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('week')}>Week</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('month')}>Month</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('sixmonth')}>Six Months</button>
-                      <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('year')}>Year</button>
-                    </div>
-                    <ResponsiveContainer width="100%" height={400}>
-                      <BarChart data={averageData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="timestamp" tickFormatter={formatXAxis} />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="energy" fill="#8884d8" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+        <div className="card mt-4 mb-5">
+          <div className="card-body">
+            <div className="row mt-5">
+              <div className="col-md-12">
+                <h2 className="m-3">Trending Analysis - FL - STP Incomer Energy Consumption, kWh</h2>
+                <div className="btn-group" role="group">
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('hour')}>Hour</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('day')}>Day</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('week')}>Week</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('month')}>Month</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('sixmonth')}>Six Months</button>
+                  <button type="button" className="btn btn-primary" onClick={() => handleIntervalChange('year')}>Year</button>
                 </div>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={searchResult ? averageData : []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="timestamp" tickFormatter={formatXAxis} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="energy" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          </>
-        )}
+          </div>
+        </div>
 
         <footer className="footer">
           <div className="container-fluid clearfix">

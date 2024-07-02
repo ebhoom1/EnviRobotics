@@ -97,13 +97,14 @@ const PrivateLayout = () => {
   const handleSearch = async (event) => {
     event.preventDefault();
     setSubmittedSearchTerm(searchTerm);
+    setSearchStatus('loading');
     try {
       const response = await dispatch(fetchIotDataByUserName(searchTerm)).unwrap();
       setSearchResults(response);
       setSearchStatus('success');
     } catch (error) {
+      console.error('Error fetching IoT data:', error); // Log the error object to the console
       setSearchStatus('error');
-      console.error('Error fetching IoT data:', error);
     }
   };
 
@@ -177,7 +178,7 @@ const PrivateLayout = () => {
       <nav className="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div className="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
           <a className="navbar-brand brand-logo" href="#">
-            <h1 className="aqualogo">envirobotics</h1>
+            <h1 className="aqualogo">EBHOOM</h1>
             <span className="navbar-brand brand-logo-mini">
               <h1 className="aqualogo">AB</h1>
             </span>
@@ -270,7 +271,7 @@ const PrivateLayout = () => {
       </nav>
       <div className="container-fluid page-body-wrapper">
         <LeftSideBar />
-        <Outlet context={{ searchResults, submittedSearchTerm }} />
+        <Outlet context={{ searchTerm: submittedSearchTerm, searchStatus, handleSearch }} />
       </div>
     </div>
   );
